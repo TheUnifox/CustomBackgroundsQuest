@@ -50,3 +50,10 @@ CustomBackgrounds.zip
 qpm.shared.json
 Android.mk.backup
 *.qmod
+
+#CMake stuff
+CMakeFiles/
+*.cmake*
+
+#ninja stuff
+*.ninja*

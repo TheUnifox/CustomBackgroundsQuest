@@ -30,10 +30,11 @@ bool getBGActive()
 
 UnityEngine::GameObject* FindMultiplayerPlatform()
 {
-    Array<GlobalNamespace::MultiplayerLobbyAvatarPlace*>* platforms = Resources::FindObjectsOfTypeAll<GlobalNamespace::MultiplayerLobbyAvatarPlace*>();
+    ArrayW<GlobalNamespace::MultiplayerLobbyAvatarPlace*> platforms = Resources::FindObjectsOfTypeAll<GlobalNamespace::MultiplayerLobbyAvatarPlace*>();
     for (size_t i = 0; i < platforms->Length(); i++)
     {
-        UnityEngine::Transform* plat = platforms->values[i]->get_transform();
+        GlobalNamespace::MultiplayerLobbyAvatarPlace* platform = platforms[i];
+        UnityEngine::Transform* plat = platform->get_transform();
         if (plat->get_parent() != nullptr) {
             return plat->get_parent()->get_gameObject();
         }
@@ -45,7 +46,7 @@ void HideChildRenderers(GameObject* obj, bool onlymeshes, bool unhide = false, b
 {
     if (obj == nullptr) return;
     bool enabled = !getBGActive() || unhide;
-    auto* rendarray = onlymeshes ? (Array<Renderer*>*)obj->GetComponentsInChildren<MeshRenderer*>() : obj->GetComponentsInChildren<Renderer*>();
+    ArrayW<UnityEngine::Renderer*> rendarray = onlymeshes ? (ArrayW<Renderer*>)obj->GetComponentsInChildren<MeshRenderer*>() : obj->GetComponentsInChildren<Renderer*>();
     for (size_t i = 0; i < rendarray->Length(); i++)
     {
         Renderer* renderer = (Renderer*)rendarray->values[i];
@@ -59,7 +60,7 @@ custom_types::Helpers::Coroutine HideChildLights(GameObject* obj, bool unhide = 
 {
     if (obj == nullptr) co_return;
     co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(UnityEngine::WaitForSeconds::New_ctor(0.5f)));
-    auto* rendarray = obj->GetComponentsInChildren<Renderer*>();
+    ArrayW<Renderer*> rendarray = obj->GetComponentsInChildren<Renderer*>();
     for (size_t i = 0; i < rendarray->Length(); i++)
     {
         Renderer* renderer = (Renderer*)rendarray->values[i];
@@ -77,9 +78,9 @@ void HideMenuEnv()
     if (!ismulti)
     {
         // Find Objects
-        auto* floorObj = GameObject::Find(il2cpp_utils::createcsstr("MenuEnvironmentManager/DefaultMenuEnvironment/BasicMenuGround"));
-        auto* notesObj = GameObject::Find(il2cpp_utils::createcsstr("MenuEnvironmentManager/DefaultMenuEnvironment/Notes"));
-        auto* notePileObj = GameObject::Find(il2cpp_utils::createcsstr("MenuEnvironmentManager/DefaultMenuEnvironment/PileOfNotes"));
+        auto* floorObj = GameObject::Find(il2cpp_utils::newcsstr("MenuEnvironmentManager/DefaultMenuEnvironment/BasicMenuGround"));
+        auto* notesObj = GameObject::Find(il2cpp_utils::newcsstr("MenuEnvironmentManager/DefaultMenuEnvironment/Notes"));
+        auto* notePileObj = GameObject::Find(il2cpp_utils::newcsstr("MenuEnvironmentManager/DefaultMenuEnvironment/PileOfNotes"));
         auto* multiEnvObj = FindMultiplayerPlatform();
         
         // Apply Visibility
@@ -89,21 +90,21 @@ void HideMenuEnv()
         if (floorObj) floorObj->GetComponent<MeshRenderer*>()->set_enabled(!bgActive);
         if (bgActive) {
             HideChildRenderers(multiEnvObj, false, false, true);
-            HideChildRenderers(multiEnvObj->Find(il2cpp_utils::createcsstr("LobbyAvatarPlace")), false, true);
+            HideChildRenderers(multiEnvObj->Find(il2cpp_utils::newcsstr("LobbyAvatarPlace")), false, true);
         }
     }
 }
 
 void HideGameEnv()
 {
-    GameObject* environmentObj = GameObject::Find(il2cpp_utils::createcsstr("Environment"));
-    GameObject* playersPlaceObj = GameObject::Find(il2cpp_utils::createcsstr("Environment/PlayersPlace"));
-    GameObject* coreLightingObj = GameObject::Find(il2cpp_utils::createcsstr("Environment/CoreLighting"));
+    GameObject* environmentObj = GameObject::Find(il2cpp_utils::newcsstr("Environment"));
+    GameObject* playersPlaceObj = GameObject::Find(il2cpp_utils::newcsstr("Environment/PlayersPlace"));
+    GameObject* coreLightingObj = GameObject::Find(il2cpp_utils::newcsstr("Environment/CoreLighting"));
     
     if (getConfig().config["hideLasers"].GetBool())
     {
         auto* behaviour = environmentObj->GetComponent<MonoBehaviour*>();
-        behaviour->StartCoroutine(reinterpret_cast<System::Collections::IEnumerator*>(custom_types::Helpers::CoroutineHelper::New(HideChildLights(environmentObj))));
+        behaviour->StartCoroutine("HideChildLights", environmentObj);
     }
     if (getConfig().config["hideEnvironment"].GetBool())
     {

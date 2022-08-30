@@ -5,7 +5,6 @@
 #include "UI/BackgroundListViewController.hpp"
 #include "UI/BackgroundConfigViewController.hpp"
 #include "UI/BackgroundsFlowCoordinator.hpp"
-using namespace CustomBackgrounds;
 
 #include "modloader/shared/modloader.hpp"
 #include "beatsaber-hook/shared/utils/logging.hpp"
@@ -13,6 +12,7 @@ using namespace CustomBackgrounds;
 #include "beatsaber-hook/shared/utils/typedefs.h"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "beatsaber-hook/shared/config/config-utils.hpp"
+#include "config-utils/shared/config-utils.hpp"
 
 #include <sys/stat.h>
 #include <fstream>
@@ -44,8 +44,6 @@ using namespace CustomBackgrounds;
 #include "GlobalNamespace/TrackLaneRing.hpp"
 #include "GlobalNamespace/Spectrogram.hpp"
 #include "GlobalNamespace/MainCamera.hpp"
-
-using namespace GlobalNamespace;
 
 UnityEngine::GameObject* backgroundObject;
 UnityEngine::Material* backgroundMat;
@@ -126,10 +124,10 @@ void InitBackgrounds()
     }
 }
 
-MAKE_HOOK_MATCH(SceneManager_SceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene previousScene, UnityEngine::SceneManagement::Scene nextScene)
+MAKE_HOOK_MATCH(SceneManager_SceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene previousActiveScene, UnityEngine::SceneManagement::Scene newActiveScene)
 {
-    SceneManager_SceneChanged(previousScene, nextScene);
-    std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+    SceneManager_SceneChanged(previousActiveScene, newActiveScene);
+    std::string nextSceneName = to_utf8(csstrtostr(newActiveScene.get_name()));
     auto& modcfg = getConfig().config;
     if ((nextSceneName == "HealthWarning" || nextSceneName == "MenuViewControllers" ) && !backgroundObject && modcfg["enabled"].GetBool())
     {
@@ -142,7 +140,7 @@ MAKE_HOOK_MATCH(TrackLaneRing_Init, &GlobalNamespace::TrackLaneRing::Init, void,
 {
     TrackLaneRing_Init(instance, pos, offset);
     bool hide = getConfig().config["hideRings"].GetBool() && getConfig().config["enabled"].GetBool();
-    auto* renderers = instance->GetComponentsInChildren<UnityEngine::Renderer*>();
+    ArrayW<UnityEngine::Renderer*> renderers = instance->GetComponentsInChildren<UnityEngine::Renderer*>();
     for (size_t i = 0; i < renderers->Length(); i++)
     {
         UnityEngine::Renderer* rend = renderers->values[i];
@@ -197,5 +195,5 @@ extern "C" void load() {
     INSTALL_HOOK(getLogger(), Spectrogram_Awake);
     INSTALL_HOOK(getLogger(), MainCamera_Awake);
     custom_types::Register::AutoRegister();
-    QuestUI::Register::RegisterMainMenuModSettingsFlowCoordinator<BackgroundsFlowCoordinator*>(modInfo);
+    QuestUI::Register::RegisterMainMenuModSettingsFlowCoordinator<CustomBackgrounds::BackgroundsFlowCoordinator*>(modInfo);
 }

@@ -4,19 +4,19 @@
   "info": {
     "name": "CustomBackgrounds",
     "id": "CustomBackgrounds",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "url": null,
     "additionalData": {}
   },
   "dependencies": [
     {
       "id": "modloader",
-      "versionRange": "*",
+      "versionRange": "^1.2.3",
       "additionalData": {}
     },
     {
       "id": "beatsaber-hook",
-      "versionRange": "^2.0.0",
+      "versionRange": "^3.12.0",
       "additionalData": {
         "extraFiles": [
           "src/inline-hook"
@@ -25,7 +25,22 @@
     },
     {
       "id": "questui",
-      "versionRange": "^0.11.1",
+      "versionRange": "^0.16.4",
+      "additionalData": {}
+    },
+    {
+      "id": "codegen",
+      "versionRange": "^0.25.0",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "^0.15.18",
+      "additionalData": {}
+    },
+    {
+      "id": "config-utils",
+      "versionRange": "^0.8.0",
       "additionalData": {}
     }
   ],

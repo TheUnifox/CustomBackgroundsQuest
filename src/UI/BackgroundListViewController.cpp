@@ -90,7 +90,7 @@ void BackgroundListViewController::DidActivate(bool firstActivation, bool addedT
 
         // Bool settings
         this->configcontainer = QuestUI::BeatSaberUI::CreateVerticalLayoutGroup(container->get_rectTransform());
-        // configcontainer->get_gameObject()->AddComponent<QuestUI::Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
+        // configcontainer->get_gameObject()->AddComponent<QuestUI::Backgroundable*>()->ApplyBackground(il2cpp_utils::newcsstr("round-rect-panel"));
         configcontainer->set_childAlignment(UnityEngine::TextAnchor::UpperCenter);
         configcontainer->set_childForceExpandHeight(false);
         configcontainer->set_childControlHeight(true);
@@ -105,7 +105,7 @@ void BackgroundListViewController::DidActivate(bool firstActivation, bool addedT
         this->bglistscroll = QuestUI::BeatSaberUI::CreateScrollView(container->get_rectTransform());
         bglistscroll->GetComponent<QuestUI::ExternalComponents*>()->Get<UnityEngine::UI::LayoutElement*>()->set_minHeight(56.0);
         auto* bglistcontainer = QuestUI::BeatSaberUI::CreateVerticalLayoutGroup(bglistscroll->get_transform());
-        // bglistcontainer->get_gameObject()->AddComponent<QuestUI::Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
+        // bglistcontainer->get_gameObject()->AddComponent<QuestUI::Backgroundable*>()->ApplyBackground(il2cpp_utils::newcsstr("round-rect-panel"));
         bglistcontainer->set_childAlignment(UnityEngine::TextAnchor::UpperCenter);
         bglistcontainer->set_childForceExpandHeight(false);
         bglistcontainer->set_childControlHeight(true);

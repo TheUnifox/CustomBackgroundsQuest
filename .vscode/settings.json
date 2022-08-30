@@ -98,7 +98,9 @@
         "hash_set": "cpp",
         "simd": "cpp",
         "thread": "cpp",
-        "concepts": "cpp"
+        "concepts": "cpp",
+        "format": "cpp",
+        "xmemory": "cpp"
     },
     "git.ignoreLimitWarning": true
 }
