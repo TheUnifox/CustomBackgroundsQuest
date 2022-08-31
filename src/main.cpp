@@ -127,7 +127,7 @@ void InitBackgrounds()
 MAKE_HOOK_MATCH(SceneManager_SceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene previousActiveScene, UnityEngine::SceneManagement::Scene newActiveScene)
 {
     SceneManager_SceneChanged(previousActiveScene, newActiveScene);
-    std::string nextSceneName = to_utf8(csstrtostr(newActiveScene.get_name()));
+    StringW nextSceneName = newActiveScene.get_name();
     auto& modcfg = getConfig().config;
     if ((nextSceneName == "HealthWarning" || nextSceneName == "MenuViewControllers" ) && !backgroundObject && modcfg["enabled"].GetBool())
     {
@@ -159,9 +159,9 @@ MAKE_HOOK_MATCH(MainCamera_Awake, &GlobalNamespace::MainCamera::Awake, void, Glo
 {
     MainCamera_Awake(caminstance);
     auto& modcfg = getConfig().config;
-    Il2CppString* sceneName = UnityEngine::SceneManagement::SceneManager::GetActiveScene().get_name();
+    StringW sceneName = UnityEngine::SceneManagement::SceneManager::GetActiveScene().get_name();
     UnityEngine::Camera* maincam = caminstance->camera;
-    if (maincam && sceneName == il2cpp_utils::newcsstr("GameCore") && modcfg["enabled"].GetBool())
+    if (maincam && sceneName == "GameCore" && modcfg["enabled"].GetBool())
     {
         mainOriginalCullMask = (mainOriginalCullMask == 0) ? maincam->get_cullingMask() : mainOriginalCullMask;
         if (modcfg["hideEnvironment"].GetBool()) maincam->set_cullingMask(maincam->get_cullingMask() & ~(1 << 14));
@@ -178,7 +178,7 @@ MAKE_HOOK_MATCH(MenuEnvManager_ShowEnv, &GlobalNamespace::MenuEnvironmentManager
 extern "C" void setup(ModInfo& info) {
 
     info.id = "CustomBackgrounds";
-    info.version = "1.3.2";
+    info.version = "1.3.3";
     modInfo = info;
     bgDirectoryPath = getDataDir(info);
     (void)mkdir(bgDirectoryPath.c_str(), 0777);
